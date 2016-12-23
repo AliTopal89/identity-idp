@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   end
 
   # Non-devise-controller routes. Alphabetically sorted.
+  get '/.well-known/openid-configuration' => 'openid_connect/configuration#index'
   get '/api/health/workers' => 'health/workers#index'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
@@ -57,6 +58,10 @@ Rails.application.routes.draw do
   get '/authenticator_setup' => 'users/totp_setup#new'
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
   get '/authenticator_start' => 'users/totp_setup#start'
+
+  get '/authorize' => 'openid_connect/authorization#index'
+  post '/authorize' => 'openid_connect/authorization#create'
+  delete '/authorize' => 'openid_connect/authorization#destroy'
 
   get '/contact' => 'contact#new', as: :contact
   post '/contact' => 'contact#create'

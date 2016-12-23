@@ -1,0 +1,9 @@
+- if @request.valid?
+  p = "Allow app to use ur info?"
+
+  a.btn.btn-primary.btn-wide href=@request.redirect_uri YEH
+  a.btn.btn-outline.btn-wide nah
+- else
+  ul
+    - @request.errors.full_messages.each do |message|
+      li = message
