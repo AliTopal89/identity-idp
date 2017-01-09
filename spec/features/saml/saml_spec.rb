@@ -11,6 +11,8 @@ feature 'saml api', devise: true do
       it 'prompts the user to sign in' do
         visit authnrequest_get
 
+        binding.pry
+
         expect(current_path).to eq root_path
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
