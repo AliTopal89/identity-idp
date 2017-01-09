@@ -8,3 +8,8 @@ p.mt-tiny.mb0 = t('forms.reactivate_profile.instructions')
   = f.input :recovery_code, required: true
   = f.input :password, required: true
   = f.button :submit, t('forms.reactivate_profile.submit'), class: 'mb1'
+
+  p
+    = t('forms.reactivate_profile.no_recovery_code')
+    '
+    = link_to(t('forms.reactivate_profile.reverify_identity'), verify_path)

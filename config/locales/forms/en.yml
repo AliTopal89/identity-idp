@@ -30,6 +30,8 @@ en:
       instructions: Provide the information below to reactivate your account.
       submit: Reactivate profile
       title: Reactivate profile
+      no_recovery_code: Don't have your recovery code?
+      reverify_identity: Re-verify your identity
     registration:
       labels:
         email: Email address
