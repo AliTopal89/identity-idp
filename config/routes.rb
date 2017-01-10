@@ -75,8 +75,10 @@ Rails.application.routes.draw do
   get '/manage/recovery_code' => 'users/recovery_codes#show'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  post '/openid_connect/authorize' => 'openid_connect/authorization#create'
-  delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy'
+  post '/openid_connect/authorize' => 'openid_connect/authorization#create',
+    as: :openid_connect_allow
+  delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
+    as: :openid_connect_deny
 
   post '/openid_connect/token' => 'openid_connect/token#create'
 
