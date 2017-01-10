@@ -1,4 +1,4 @@
-class OpenIdConnectAuthorizeForm
+class OpenidConnectAuthorizeForm
   include ActiveModel::Model
 
   VALID_ACR_VALUES = [
@@ -41,30 +41,34 @@ class OpenIdConnectAuthorizeForm
     @state = params[:state]
   end
 
-  def result_uri
-    return unless valid?
-
-    URI(request_uri).tap do |uri|
-      query = Rack::Utils.parse_nested_query(uri.query).with_indifferent_access
-      url.query = query.merge(state: state, code: result_code).to_query
-    end.to_s
+  def params
+    {
+      acr_values: acr_values,
+      client_id: client_id,
+      nonce: nonce,
+      prompt: prompt,
+      redirect_uri: redirect_uri,
+      response_type: response_type,
+      scope: scope,
+      state: state
+    }
   end
 
   private
 
   def parse_acr_values(acr_values)
     return [] if acr_values.blank?
-    acr_values.split(' ').compact
+    acr_values.split(' ').compact & VALID_ACR_VALUES
   end
 
   def validate_acr_values
-    if (acr_values & VALID_ACR_VALUES).blank?
+    if acr_values.blank?
       errors.add(:acr_values, 'no acceptable acr_values found')
     end
   end
 
   def validate_client_id
-    # TODO: check the db
+    # TODO: check the service providers
   end
 
   def validate_redirect_uri
@@ -77,9 +81,5 @@ class OpenIdConnectAuthorizeForm
 
   def validate_scope
     # TODO: validate scope
-  end
-
-  def result_code
-    # add that shizz to redis?
   end
 end

@@ -1,0 +1,15 @@
+- if @authorize_form.valid?
+  p = "Allow app?"
+
+
+  = button_to 'Allow',
+              openid_connect_allow_path,
+              params: @authorize_form.params,
+              class: 'btn btn-primary btn-wide'
+
+  / TODO: link to #create endpoint that does redirect so we can track it
+  a.btn.btn-outline.btn-wide Decline
+- else
+  ul
+    - @authorize_form.errors.full_messages.each do |message|
+      li = message

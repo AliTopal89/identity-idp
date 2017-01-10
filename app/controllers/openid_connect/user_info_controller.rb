@@ -1,4 +1,6 @@
 module OpenidConnect
-  class UserInfoController
+  class UserInfoController < ApplicationController
+    def show
+    end
   end
 end
