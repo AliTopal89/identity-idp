@@ -12,9 +12,15 @@ class OpenidConnectService
     authorize_form = OpenidConnectAuthorizeForm.new(params)
 
     if authorize_form.valid?
+      code = find_or_create_identity(
+        user: current_user,
+        client_id: authorize_form.client_id,
+        nonce: authorize_form.nonce
+      )
+
       add_query_params(
         authorize_form.redirect_uri,
-        code: generate_authorize_code(current_user),
+        code: authorization.external_token,
         state: authorize_form.state
       )
     else
@@ -25,6 +31,10 @@ class OpenidConnectService
         state: authorize_form.state
       )
     end
+  end
+
+  def identity(user:, code:)
+    user.identities.where(external_token: code)
   end
 
   def token(current_user, params)
@@ -45,18 +55,23 @@ class OpenidConnectService
 
   private
 
-  def generate_authorize_code(current_user)
-    code = SecureRandom.hex
-    Sidekiq.redis do |redis|
-      key = authorize_code_key(current_user)
-      redis.sadd(key, code)
-      redis.expire(key, CODE_EXPIRATION)
-    end
-    code
-  end
+  # TODO: refactor to share code with IdentityLinker?
+  # can we have multiple identities/authorizations per provider?
+  # @return [String] unique session identifier
+  def find_or_create_identity(user:, client_id:, nonce:)
+    identity = user.identities.
+      where(service_provider: client_id).
+      first_or_initialize(
+        external_token: SecureRandom.hex
+      )
 
-  def authorize_code_key(current_user)
-    "user:#{current_user.id}:openidconnect:codes"
+    identity.update!(
+      session_uuid: SecureRandom.uuid,
+      last_authenticated_at: Time.current,
+      nonce: nonce
+    )
+
+    identity.external_token
   end
 
   def add_query_params(redirect_uri, params)

@@ -21,13 +21,17 @@ class OpenidConnectTokenForm
     @client_assertion = params[:client_assertion]
   end
 
+  private
+
   def validate_code
-    # check in redis via OpenidConnectService
+    errors.add :code, "invalid code" unless identity.present?
   end
 
   def validate_client_assertion
-    # TODO: look up which client id....via the code?
-    # TODO: look up the public key based on the client id
+    return unless identity.present?
+
+    service_provider = identity.service_provider
+    # TODO: look up the public key based on the client id/service provider
     client_public_key = OpenSSL::X509::Certificate.new(
       File.read(Rails.root.join('certs/saml.crt'))
     ).public_key
@@ -41,6 +45,12 @@ class OpenidConnectTokenForm
         errors.add(attribute, error)
       end
     end
+  end
+
+  def identity
+    return @_identity if defined?(@_identity)
+
+    @_identity = OpenidConnectTokenForm.new.identity(user: current_user, code: code)
   end
 
   class ClientAuthenticationForm
