@@ -41,47 +41,19 @@ class OpenidConnectTokenForm
       File.read(Rails.root.join('certs/saml.crt'))
     ).public_key
 
-    payload, _headers = JWT.decode(client_assertion, client_public_key, true, algorithm: 'RS256')
-    payload = payload.with_indifferent_access
-
-    client_authentication_form = ClientAuthenticationForm.new(payload)
-    if !client_authentication_form.valid?
-      client_authentication_form.errors.each do |attribute, error|
-        errors.add(attribute, error)
-      end
-    end
-  end
-
-  class ClientAuthenticationForm
-    include ActiveModel::Model
-
-    attr_reader :iss,
-                :sub,
-                :aud,
-                :jti,
-                :exp
-
-    validates_presence_of :iss,
-                          :sub,
-                          :jti
-
-    validate :validate_aud
-    validate :validate_exp
-
-    def initialize(payload)
-      @iss = payload[:iss]
-      @sub = payload[:sub]
-      @aud = payload[:aud]
-      @jti = payload[:jti]
-      @exp = payload[:exp]
-    end
-
-    def validate_aud
-      # TODO: should be the URL of the token endpoint
-    end
-
-    def validate_exp
-      # TODO: should be an integer timestamp a very small time in the future
-    end
+    payload, _headers = JWT.decode(
+      client_assertion,
+      client_public_key,
+      true,
+      algorithm: 'RS256',
+      iss: 'CLIENT ID',
+      verify_iss: true,
+      sub: 'CLIENT ID',
+      verify_sub: true,
+      # aud: '', # TODO
+      # verify_aud: true, # TODO
+    )
+  rescue JWT::DecodeError => e
+    errors.add(:client_assertion, e.message)
   end
 end

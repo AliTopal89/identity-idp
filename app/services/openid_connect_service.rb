@@ -1,5 +1,8 @@
 class OpenidConnectService
   CODE_EXPIRATION = 24.hours.to_i
+  ISSUER = ''.freeze # TODO use real issuer
+
+  InvalidIdTokenError = Class.new(StandardError)
 
   cattr_accessor :private_key do
     OpenSSL::PKey::RSA.new(
@@ -49,7 +52,7 @@ class OpenidConnectService
     return unless identity
 
     payload = {
-      iss: '',
+      iss: ISSUER,
       aud: 'CLIENT ID', # client id
       sub: identity.uuid,
       acr: '',
@@ -60,8 +63,26 @@ class OpenidConnectService
       nbf: Time.zone.now.to_i
     }
 
-    id_token = JWT.encode payload, self.class.private_key, 'RS256'
+    id_token = JWT.encode(payload, self.class.private_key, 'RS256')
     { json: { id_token: id_token } }
+  end
+
+  # Verifies the token
+  def verify(id_token)
+    payload, headers = JWT.decode(
+      id_token,
+      self.class.private_key,
+      true,
+      algorithm: 'RS256',
+      verify_iat: true,
+      iss: ISSUER,
+      verify_iss: true
+    )
+    payload = payload.with_indifferent_access
+
+    identity(payload[:sub])
+  rescue JWT::DecodeError => e
+    raise InvalidIdTokenError, e.message
   end
 
   private

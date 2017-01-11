@@ -10,7 +10,7 @@ feature 'OpenID Connect' do
         client_id: 'CLIENT ID', # TODO
         response_type: 'code',
         acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid loa1',
+        scope: 'openid profile', # profile.email profile.first_name
         redirect_uri: 'com.login.gov.testapp://eyyy', # TODO
         state: state,
         prompt: 'select_account',
@@ -35,7 +35,7 @@ feature 'OpenID Connect' do
         exp: 5.minutes.from_now.to_i
       }
 
-      client_assertion = JWT.encode jwt_payload, client_private_key, 'RS256'
+      client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
 
       page.driver.post openid_connect_token_path,
                        grant_type: 'authorization_code',
@@ -48,7 +48,7 @@ feature 'OpenID Connect' do
       id_token = token_response[:id_token]
       expect(id_token).to be_present
 
-      decoded_id_token, _headers = JWT.decode id_token, client_public_key, true, algorithm: 'RS256'
+      decoded_id_token, _headers = JWT.decode(id_token, client_public_key, true, algorithm: 'RS256')
       decoded_id_token = decoded_id_token.with_indifferent_access
       sub = decoded_id_token[:sub]
       expect(decoded_id_token[:nonce]).to eq(nonce)
