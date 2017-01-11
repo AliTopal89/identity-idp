@@ -34,7 +34,7 @@ class OpenidConnectService
   end
 
   def identity(user:, code:)
-    user.identities.where(external_token: code)
+    user.identities.where(session_uuid: code)
   end
 
   def token(current_user, params)
@@ -61,9 +61,7 @@ class OpenidConnectService
   def find_or_create_identity(user:, client_id:, nonce:)
     identity = user.identities.
       where(service_provider: client_id).
-      first_or_initialize(
-        external_token: SecureRandom.hex
-      )
+      first_or_initialize
 
     identity.update!(
       session_uuid: SecureRandom.uuid,
@@ -71,7 +69,7 @@ class OpenidConnectService
       nonce: nonce
     )
 
-    identity.external_token
+    identity.session_uuid
   end
 
   def add_query_params(redirect_uri, params)
