@@ -1,8 +1,7 @@
 class OpenidConnectTokenForm
   include ActiveModel::Model
 
-  attr_reader :current_user,
-              :grant_type,
+  attr_reader :grant_type,
               :code,
               :client_assertion_type,
               :client_assertion
@@ -14,11 +13,17 @@ class OpenidConnectTokenForm
   validate :validate_code
   validate :validate_client_assertion
 
-  def initialize(current_user, params)
+  def initialize(params)
     @grant_type = params[:grant_type]
     @code = params[:code]
     @client_assertion_type = params[:client_assertion_type]
     @client_assertion = params[:client_assertion]
+  end
+
+  def identity
+    return @_identity if defined?(@_identity)
+
+    @_identity = OpenidConnectService.new.identity(code)
   end
 
   private
@@ -45,12 +50,6 @@ class OpenidConnectTokenForm
         errors.add(attribute, error)
       end
     end
-  end
-
-  def identity
-    return @_identity if defined?(@_identity)
-
-    @_identity = OpenidConnectTokenForm.new.identity(user: current_user, code: code)
   end
 
   class ClientAuthenticationForm

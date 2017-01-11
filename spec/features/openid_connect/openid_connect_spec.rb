@@ -52,6 +52,7 @@ feature 'OpenID Connect' do
       decoded_id_token = decoded_id_token.with_indifferent_access
       sub = decoded_id_token[:sub]
       expect(decoded_id_token[:nonce]).to eq(nonce)
+      expect(decoded_id_token[:aud]).to eq('CLIENT ID')
 
       page.driver.get openid_connect_userinfo_path,
                       {},

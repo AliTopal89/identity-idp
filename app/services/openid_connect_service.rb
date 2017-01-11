@@ -20,7 +20,7 @@ class OpenidConnectService
 
       add_query_params(
         authorize_form.redirect_uri,
-        code: authorization.external_token,
+        code: code,
         state: authorize_form.state
       )
     else
@@ -33,24 +33,35 @@ class OpenidConnectService
     end
   end
 
-  def identity(user:, code:)
-    user.identities.where(session_uuid: code)
+  def identity(code)
+    Identity.where(session_uuid: code).first
   end
 
-  def token(current_user, params)
+  # @return [Hash] response passed to a controller's render
+  def token(params)
+    token_form = OpenidConnectTokenForm.new(params)
+
+    if !token_form.valid?
+      { json: { error: 'error message goes here' }, status: :bad_request }
+    end
+
+    identity = token_form.identity
+    return unless identity
+
     payload = {
       iss: '',
-      aud: '',
-      sub: '',
+      aud: 'CLIENT ID', # client id
+      sub: identity.uuid,
       acr: '',
-      nonce: '',
-      jti: '',
+      nonce: identity.nonce,
+      jti: '', # a unique identifier for the token which can be used to prevent reuse of the token
       exp: (Time.zone.now + 10.minutes).to_i,
       iat: Time.zone.now.to_i,
       nbf: Time.zone.now.to_i
     }
 
-    JWT.encode payload, self.class.private_key, 'RS256'
+    id_token = JWT.encode payload, self.class.private_key, 'RS256'
+    { json: { id_token: id_token } }
   end
 
   private
