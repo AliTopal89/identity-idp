@@ -29,6 +29,17 @@ function success(data) {
   if (show_warning & !el) {
     cntnr.insertAdjacentHTML('afterbegin', warning_info);
     window.LoginGov.countdownTimer(document.getElementById('countdown'), warning);
+
+    el = document.getElementById('session-timeout-msg')
+    var postForm = document.querySelector('form[method=post]');
+    if (postForm) {
+      window.onbeforeunload = null;
+      var continueButton = el.querySelector('.js-continue-form');
+      el.onclick = () => {
+        postForm.submit();
+        return false;
+      }
+    }
   }
 
   if (!show_warning & el) el.remove();

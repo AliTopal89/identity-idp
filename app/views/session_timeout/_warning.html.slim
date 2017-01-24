@@ -6,6 +6,6 @@
         h3.mt0.mb2 = t('headings.session_timeout_warning')
         p.mb3 = modal.message
         = link_to modal.continue,
-          request.original_url, class: 'btn btn-primary'
+          request.original_url, class: 'btn btn-primary js-continue-form'
         = link_to modal.sign_out,
           destroy_user_session_path, class: 'ml2 btn btn-outline'
