@@ -1,19 +1,19 @@
 ---
 es:
   errors:
-    confirm_password_incorrect: La contraseña proporcionada es incorrecta.
-    invalid_authenticity_token: Huy! Algo salió mal. Inicia sesión de nuevo.
+    confirm_password_incorrect: La contraseña entregada es incorrecta.
+    invalid_authenticity_token: Huy! Algo salió mal. Inicie sesión de nuevo.
     invalid_totp: Se ha introducido un código no válido. Vuelve a intentarlo.
     max_password_attempts_reached: >
       Cerramos la sesión porque no proporcionó su contraseña correcta. Si
-      olvidó su contraseña, haga clic en "¿Olvidó su contraseña?" enlace abajo.
+      se ha olvidado su contraseña, haga clic en "¿Se ha olvidado su contraseña?" enlace abajo.
     messages:
       already_confirmed: Ya está confirmado, por favor intenta iniciar sesión.
       blank: Por favor, rellenar este campo.
       confirmation_invalid_token:
         El enlace de confirmación en el que ha hecho clic ya no es válido. Esto puede haber
-        sido causado al hacer clic en un enlace antiguo de su correo electrónico, o puede ser que ya haya
-        confirmado su cuenta.
+        sido causado por hacer clic en un enlace antiguo de su correo electrónico, o puede ser que su cuenta ya haya sido
+        confirmada.
       confirmation_period_expired:
         Has tardado más de %{period} para confirmar su dirección de correo electrónico.
         Por favor haga clic en "Reenviar instrucciones de confirmación".
