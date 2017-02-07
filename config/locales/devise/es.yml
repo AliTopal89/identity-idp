@@ -69,12 +69,12 @@ es:
         Su solicitud para actualizar su número de teléfono fue procesada, pero necesitamos
         confirmar primero su número nuevo. Por favor, siga las siguientes instrucciones. Si no
         confirma su nuevo número, seguiremos usando su número de teléfono antiguo.
-      signed_up: ¡Bienvenido! Ha creado una cuenta.
+      signed_up: ¡Bienvenido! Una cuenta ha sido creada.
       signed_up_but_inactive:
-        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
+        Una cuenta ha sido creada. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta aún no está activada.
       signed_up_but_locked:
-        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
+        Una cuenta ha sido creada. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta está bloqueada.
       start:
         bullet_1_with_sp: login.gov provee servicios de cuenta a %{sp}
