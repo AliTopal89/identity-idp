@@ -63,5 +63,7 @@ class SamlIdpController < ApplicationController
 
   def delete_branded_experience
     session.delete(:sp) if session[:sp]
+    session.delete(:saml_request_url) if session[:saml_request_url]
+    session.delete(:user_return_to) if session[:user_return_to]
   end
 end

@@ -34,7 +34,7 @@ describe Verify::ConfirmationsController do
       let(:saml_authn_request) { sp1_authnrequest }
 
       before do
-        subject.session[:saml_request_url] = saml_authn_request
+        subject.session[:user_return_to] = saml_authn_request
         get :index
       end
 
