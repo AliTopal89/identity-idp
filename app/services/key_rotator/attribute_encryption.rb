@@ -6,7 +6,7 @@ module KeyRotator
     end
 
     def rotate(user)
-      user.update_columns(build_rotated_columns(user))
+      UpdateUser.new(user: user, attributes: build_rotated_columns(user)).call
     end
 
     private
